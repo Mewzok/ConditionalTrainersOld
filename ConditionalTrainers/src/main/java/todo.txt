@@ -1,0 +1,1 @@
+look into adding capabilities into trainer NPCS to store team data.
