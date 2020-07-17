@@ -19,7 +19,7 @@ public class PlayerDataBuilder extends AbstractDataBuilder<PlayerData> implement
 	@Override
 	public PlayerData create()
 	{
-		return new PlayerData(false);
+		return new PlayerData(false, false, false);
 	}
 	
 	@Override

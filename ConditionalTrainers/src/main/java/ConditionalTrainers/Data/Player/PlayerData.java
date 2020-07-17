@@ -12,11 +12,15 @@ import org.spongepowered.api.data.value.mutable.Value;
 
 public class PlayerData extends AbstractData<PlayerData, ImmutablePlayerData>
 {
-	private Boolean npcSearch;
+	private Boolean npcInfoSearch;
+	private Boolean npcCreateSearch;
+	private Boolean npcDeleteSearch;
 	
-	PlayerData(Boolean npcSearch)
+	PlayerData(Boolean npcInfoSearch, Boolean npcCreateSearch, Boolean npcDeleteSearch)
 	{
-		this.npcSearch = npcSearch;
+		this.npcInfoSearch = npcInfoSearch;
+		this.npcCreateSearch = npcCreateSearch;
+		this.npcDeleteSearch = npcDeleteSearch;
 		
 		registerGettersAndSetters();
 	}
@@ -24,16 +28,32 @@ public class PlayerData extends AbstractData<PlayerData, ImmutablePlayerData>
 	@Override
 	protected void registerGettersAndSetters()
 	{
-		registerFieldGetter(PlayerKeys.NPC_SEARCH, () -> this.npcSearch);
+		registerFieldGetter(PlayerKeys.NPC_INFO_SEARCH, () -> this.npcInfoSearch);
+		registerFieldGetter(PlayerKeys.NPC_CREATE_SEARCH, () -> this.npcCreateSearch);
+		registerFieldGetter(PlayerKeys.NPC_DELETE_SEARCH, () -> this.npcDeleteSearch);
 		
-		registerFieldSetter(PlayerKeys.NPC_SEARCH, npcSearch -> this.npcSearch = npcSearch);
+		registerFieldSetter(PlayerKeys.NPC_INFO_SEARCH, npcInfoSearch -> this.npcInfoSearch = npcInfoSearch);
+		registerFieldSetter(PlayerKeys.NPC_CREATE_SEARCH, npcCreateSearch -> this.npcCreateSearch = npcCreateSearch);
+		registerFieldSetter(PlayerKeys.NPC_DELETE_SEARCH, npcDeleteSearch -> this.npcDeleteSearch = npcDeleteSearch);
 		
-		registerKeyValue(PlayerKeys.NPC_SEARCH, this::npcSearch);
+		registerKeyValue(PlayerKeys.NPC_INFO_SEARCH, this::npcInfoSearch);
+		registerKeyValue(PlayerKeys.NPC_CREATE_SEARCH, this::npcCreateSearch);
+		registerKeyValue(PlayerKeys.NPC_DELETE_SEARCH, this::npcDeleteSearch);
 	}
 	
-	public Value<Boolean> npcSearch()
+	public Value<Boolean> npcInfoSearch()
 	{
-		return Sponge.getRegistry().getValueFactory().createValue(PlayerKeys.NPC_SEARCH, npcSearch);
+		return Sponge.getRegistry().getValueFactory().createValue(PlayerKeys.NPC_INFO_SEARCH, npcInfoSearch);
+	}
+	
+	public Value<Boolean> npcCreateSearch()
+	{
+		return Sponge.getRegistry().getValueFactory().createValue(PlayerKeys.NPC_CREATE_SEARCH, npcCreateSearch);
+	}
+	
+	public Value<Boolean> npcDeleteSearch()
+	{
+		return Sponge.getRegistry().getValueFactory().createValue(PlayerKeys.NPC_DELETE_SEARCH, npcDeleteSearch);
 	}
 	
 	@Override
@@ -44,7 +64,9 @@ public class PlayerData extends AbstractData<PlayerData, ImmutablePlayerData>
 		{
 			PlayerData otherData = otherData_.get();
 			PlayerData finalData = overlap.merge(this, otherData);
-			this.npcSearch = finalData.npcSearch;
+			this.npcInfoSearch = finalData.npcInfoSearch;
+			this.npcCreateSearch = finalData.npcCreateSearch;
+			this.npcDeleteSearch = finalData.npcDeleteSearch;
 		}
 		return Optional.of(this);
 	}
@@ -57,9 +79,12 @@ public class PlayerData extends AbstractData<PlayerData, ImmutablePlayerData>
 	
 	public Optional<PlayerData> from(DataView view)
 	{
-		if(view.contains(PlayerKeys.NPC_SEARCH.getQuery()))
+		if(view.contains(PlayerKeys.NPC_INFO_SEARCH.getQuery()) && view.contains(PlayerKeys.NPC_CREATE_SEARCH.getQuery()) &&
+				view.contains(PlayerKeys.NPC_DELETE_SEARCH.getQuery()))
 		{
-			this.npcSearch = view.getBoolean(PlayerKeys.NPC_SEARCH.getQuery()).get();
+			this.npcInfoSearch = view.getBoolean(PlayerKeys.NPC_INFO_SEARCH.getQuery()).get();
+			this.npcCreateSearch = view.getBoolean(PlayerKeys.NPC_CREATE_SEARCH.getQuery()).get();
+			this.npcDeleteSearch = view.getBoolean(PlayerKeys.NPC_DELETE_SEARCH.getQuery()).get();
 			return Optional.of(this);
 		} else
 		{
@@ -70,13 +95,13 @@ public class PlayerData extends AbstractData<PlayerData, ImmutablePlayerData>
 	@Override
 	public PlayerData copy()
 	{
-		return new PlayerData(this.npcSearch);
+		return new PlayerData(this.npcInfoSearch, this.npcCreateSearch, this.npcDeleteSearch);
 	}
 	
 	@Override
 	public ImmutablePlayerData asImmutable()
 	{
-		return new ImmutablePlayerData(this.npcSearch);
+		return new ImmutablePlayerData(this.npcInfoSearch, this.npcCreateSearch, this.npcDeleteSearch);
 	}
 	
 	@Override
@@ -90,6 +115,8 @@ public class PlayerData extends AbstractData<PlayerData, ImmutablePlayerData>
 	public DataContainer toContainer()
 	{
 		return super.toContainer()
-				.set(PlayerKeys.NPC_SEARCH.getQuery(), this.npcSearch);
+				.set(PlayerKeys.NPC_INFO_SEARCH.getQuery(), this.npcInfoSearch)
+				.set(PlayerKeys.NPC_CREATE_SEARCH.getQuery(), this.npcCreateSearch)
+				.set(PlayerKeys.NPC_DELETE_SEARCH.getQuery(), this.npcDeleteSearch);
 	}
 }
