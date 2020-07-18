@@ -1,6 +1,7 @@
 package ConditionalTrainers;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.entity.living.player.Player;
@@ -12,10 +13,12 @@ import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.text.Text;
 
 import com.google.inject.Inject;
 
 import ConditionalTrainers.Commands.CT;
+import ConditionalTrainers.Commands.Create;
 import ConditionalTrainers.Commands.Info;
 import ConditionalTrainers.Data.Player.PlayerData;
 import ConditionalTrainers.Data.Player.ImmutablePlayerData;
@@ -28,8 +31,6 @@ import ConditionalTrainers.Data.Trainer.TrainerStorage;
 import ConditionalTrainers.System.Utility;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Plugin(id = "conditionaltrainers", name = "Conditional Trainers", version = "0.0.1")
 public class Main {
@@ -37,6 +38,14 @@ public class Main {
 	PluginContainer container;
 	
 	// Command specs begin
+	// Create - CT child
+	CommandSpec ctcCommandSpec = CommandSpec.builder()
+			.arguments(
+					GenericArguments.onlyOne(GenericArguments.string(Text.of("objective"))),
+					GenericArguments.onlyOne(GenericArguments.integer(Text.of("value")))
+					)
+			.executor(new Create())
+			.build();
 	// Info - CT child
 	CommandSpec ctiCommandSpec = CommandSpec.builder()
 			.executor(new Info())
@@ -44,6 +53,7 @@ public class Main {
 	// CT > Info
 	CommandSpec ctCommandSpec = CommandSpec.builder()
 			.child(ctiCommandSpec, "info", "i")
+			.child(ctcCommandSpec, "create", "c", "add")
 			.executor(new CT())
 			.build();
 	// Command specs end

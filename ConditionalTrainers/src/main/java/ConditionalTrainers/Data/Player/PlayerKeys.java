@@ -12,6 +12,8 @@ public class PlayerKeys
 	public static final Key<Value<Boolean>> NPC_INFO_SEARCH;
 	public static final Key<Value<Boolean>> NPC_CREATE_SEARCH;
 	public static final Key<Value<Boolean>> NPC_DELETE_SEARCH;
+	public static final Key<Value<String>> OBJECTIVE;
+	public static final Key<Value<Integer>> VALUE;
 	
 	static
 	{
@@ -33,6 +35,17 @@ public class PlayerKeys
 				.name("NPC Delete Search")
 				.query(DataQuery.of('.', "conditionaltrainers.npcdeletesearch"))
 				.build();
-				
+		OBJECTIVE = Key.builder()
+				.type(TypeTokens.STRING_VALUE_TOKEN)
+				.id("ConditionalTrainers:OBJECTIVE")
+				.name("Objective")
+				.query(DataQuery.of('.', "conditionaltrainers.objective"))
+				.build();
+		VALUE = Key.builder()
+				.type(TypeTokens.INTEGER_VALUE_TOKEN)
+				.id("ConditionalTrainers:VALUE")
+				.name("Value")
+				.query(DataQuery.of('.', "conditionaltrainers.value"))
+				.build();
 	}
 }
