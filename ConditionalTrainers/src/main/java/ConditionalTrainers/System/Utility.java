@@ -67,10 +67,10 @@ public class Utility
 			int value = player.get(PlayerKeys.VALUE).get();
 			
 			// reset player's data
-			player.offer(PlayerKeys.OBJECTIVE, null);
+			player.offer(PlayerKeys.OBJECTIVE, "");
 			player.offer(PlayerKeys.VALUE, 0);
 			
-			NBTTagCompound nbt = null;
+			NBTTagCompound nbt = new NBTTagCompound();
 			NPCTrainer npc = (NPCTrainer)entity;
 			ITrainer trainer = npc.getCapability(TrainerProvider.TRAINER_CAP, null);
 			NBTTagCompound scobo = new NBTTagCompound();
@@ -80,8 +80,9 @@ public class Utility
 			npc.getPokemonStorage().writeToNBT(nbt);
 			
 			// debug
-			System.out.println("Team NBT: " + nbt.getKeySet());
+			System.out.println("Team NBT: " + nbt.getKeySet()); // this saves as party0
 			
+			// This breaks
 			trainer.addTeam(nbt);
 			
 			trainer.addScoreboard(scobo);
