@@ -1,33 +1,33 @@
 package ConditionalTrainers.Data.Trainer;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import net.minecraft.nbt.NBTTagCompound;
 
 public interface ITrainer
 {
 	// Sets a list of teams for the particular NPC
-	public void setTeams(NBTTagCompound teams);
+	public void setTeams(ArrayList<NBTTagCompound> teams);
 	
 	// Gets a list of all teams for the particular NPC
-	public NBTTagCompound getTeams();
+	public ArrayList<NBTTagCompound> getTeams();
 	
 	// Adds a team to the list
 	public void addTeam(NBTTagCompound team);
 	
 	// Removes a team from the list
-	public void removeTeam(String tag);
+	public void removeTeam(NBTTagCompound tag);
 	
 	
 	// Scoreboard objectives
 	// Sets a list of all scoreboard objectives and scores
-	public void setScoreboard(NBTTagCompound scoreboard);
+	public void setScoreboard(ArrayList<String> scoreboard);
 	
 	// Gets a list of all scoreboard objectives and scores
-	public NBTTagCompound getScoreboard();
+	public ArrayList<String> getScoreboard();
 	
 	// Adds a single scoreboard objective with a score to the list
-	public void addScoreboard(NBTTagCompound scoreboard);
+	public void addScoreboard(String scoreboard);
 	
 	// Removes a single scoreboard objective with a score from the list
 	public void removeScoreboard(String tag);

@@ -9,14 +9,17 @@ public class ImmutablePlayerData extends AbstractImmutableData<ImmutablePlayerDa
 {
 	private Boolean npcInfoSearch;
 	private Boolean npcCreateSearch;
+	private Boolean npcLoadSearch;
 	private Boolean npcDeleteSearch;
 	private String objective;
 	private int value;
 	
-	ImmutablePlayerData(Boolean npcInfoSearch, Boolean npcCreateSearch, Boolean npcDeleteSearch, String objective, int value)
+	ImmutablePlayerData(Boolean npcInfoSearch, Boolean npcCreateSearch, Boolean npcLoadSearch, Boolean npcDeleteSearch,
+			String objective, int value)
 	{
 		this.npcInfoSearch = npcInfoSearch;
 		this.npcCreateSearch = npcCreateSearch;
+		this.npcLoadSearch = npcLoadSearch;
 		this.npcDeleteSearch = npcDeleteSearch;
 		this.objective = objective;
 		this.value = value;
@@ -29,12 +32,14 @@ public class ImmutablePlayerData extends AbstractImmutableData<ImmutablePlayerDa
 	{
 		registerFieldGetter(PlayerKeys.NPC_INFO_SEARCH, () -> this.npcInfoSearch);
 		registerFieldGetter(PlayerKeys.NPC_CREATE_SEARCH, () -> this.npcCreateSearch);
+		registerFieldGetter(PlayerKeys.NPC_LOAD_SEARCH, () -> this.npcLoadSearch);
 		registerFieldGetter(PlayerKeys.NPC_DELETE_SEARCH, () -> this.npcDeleteSearch);
 		registerFieldGetter(PlayerKeys.OBJECTIVE, () -> this.objective);
 		registerFieldGetter(PlayerKeys.VALUE, () -> this.value);
 		
 		registerKeyValue(PlayerKeys.NPC_INFO_SEARCH, this::npcInfoSearch);
 		registerKeyValue(PlayerKeys.NPC_CREATE_SEARCH, this::npcCreateSearch);
+		registerKeyValue(PlayerKeys.NPC_LOAD_SEARCH, this::npcLoadSearch);
 		registerKeyValue(PlayerKeys.NPC_DELETE_SEARCH, this::npcDeleteSearch);
 		registerKeyValue(PlayerKeys.OBJECTIVE, this::objective);
 		registerKeyValue(PlayerKeys.VALUE, this::value);
@@ -48,6 +53,11 @@ public class ImmutablePlayerData extends AbstractImmutableData<ImmutablePlayerDa
 	public ImmutableValue<Boolean> npcCreateSearch()
 	{
 		return Sponge.getRegistry().getValueFactory().createValue(PlayerKeys.NPC_CREATE_SEARCH, npcCreateSearch).asImmutable();
+	}
+	
+	public ImmutableValue<Boolean> npcLoadSearch()
+	{
+		return Sponge.getRegistry().getValueFactory().createValue(PlayerKeys.NPC_LOAD_SEARCH, npcLoadSearch).asImmutable();
 	}
 	
 	public ImmutableValue<Boolean> npcDeleteSearch()
@@ -68,7 +78,7 @@ public class ImmutablePlayerData extends AbstractImmutableData<ImmutablePlayerDa
 	@Override
 	public PlayerData asMutable()
 	{
-		return new PlayerData(npcInfoSearch, npcCreateSearch, npcDeleteSearch, objective, value);
+		return new PlayerData(npcInfoSearch, npcCreateSearch, npcLoadSearch, npcDeleteSearch, objective, value);
 	}
 	
 	@Override
@@ -84,6 +94,7 @@ public class ImmutablePlayerData extends AbstractImmutableData<ImmutablePlayerDa
 		return super.toContainer()
 				.set(PlayerKeys.NPC_INFO_SEARCH.getQuery(), this.npcInfoSearch)
 				.set(PlayerKeys.NPC_CREATE_SEARCH.getQuery(), this.npcCreateSearch)
+				.set(PlayerKeys.NPC_LOAD_SEARCH.getQuery(), this.npcLoadSearch)
 				.set(PlayerKeys.NPC_DELETE_SEARCH.getQuery(), this.npcDeleteSearch)
 				.set(PlayerKeys.OBJECTIVE.getQuery(), this.objective)
 				.set(PlayerKeys.VALUE.getQuery(), this.value);

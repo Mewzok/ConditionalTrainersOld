@@ -1,57 +1,53 @@
 package ConditionalTrainers.Data.Trainer;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.ArrayList;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.scoreboard.Score;
-import net.minecraft.scoreboard.ScoreObjective;
 
 public class Trainer implements ITrainer
 {
-	private NBTTagCompound teams;
-	private NBTTagCompound scoreboard;
-	private NBTTagCompound teamData;
+	private ArrayList<NBTTagCompound> teams = new ArrayList<NBTTagCompound>();
+	private ArrayList<String> scoreboard = new ArrayList<String>();
+	private NBTTagCompound teamData = new NBTTagCompound();
 	
-	public void setTeams(NBTTagCompound teams)
+	public void setTeams(ArrayList<NBTTagCompound> teams)
 	{
 		this.teams = teams;
 	}
 
-	public NBTTagCompound getTeams()
+	public ArrayList<NBTTagCompound> getTeams()
 	{
 		return teams;
 	}
 
 	public void addTeam(NBTTagCompound team)
 	{
-		teams.merge(team);
+		this.teams.add(team);
 	}
 
-	public void removeTeam(String tag)
+	public void removeTeam(NBTTagCompound tag)
 	{
-		teams.removeTag(tag);
+		this.teams.remove(tag);
 	}
 
-	public void setScoreboard(NBTTagCompound scoreboard)
+	public void setScoreboard(ArrayList<String> scoreboard)
 	{
 		this.scoreboard = scoreboard;
 	}
 
-	public NBTTagCompound getScoreboard()
+	public ArrayList<String> getScoreboard()
 	{
 		return this.scoreboard;
 	}
 
-	public void addScoreboard(NBTTagCompound scoreboard)
+	public void addScoreboard(String scoreboard)
 	{
-		this.scoreboard.merge(scoreboard);
+		this.scoreboard.add(scoreboard);
 	}
 
 	public void removeScoreboard(String tag)
 	{
-		this.scoreboard.removeTag(tag);
+		this.scoreboard.remove(tag);
 	}
 
 	public void setTeamData(NBTTagCompound scoreboard, NBTTagCompound teams)

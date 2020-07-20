@@ -11,6 +11,7 @@ public class PlayerKeys
 	public static void dummy() {} // invoke static constructor
 	public static final Key<Value<Boolean>> NPC_INFO_SEARCH;
 	public static final Key<Value<Boolean>> NPC_CREATE_SEARCH;
+	public static final Key<Value<Boolean>> NPC_LOAD_SEARCH;
 	public static final Key<Value<Boolean>> NPC_DELETE_SEARCH;
 	public static final Key<Value<String>> OBJECTIVE;
 	public static final Key<Value<Integer>> VALUE;
@@ -28,6 +29,12 @@ public class PlayerKeys
 				.id("ConditionalTrainers:NPC_CREATE_SEARCH")
 				.name("NPC Create Search")
 				.query(DataQuery.of('.', "conditionaltrainers.npccreatesearch"))
+				.build();
+		NPC_LOAD_SEARCH = Key.builder()
+				.type(TypeTokens.BOOLEAN_VALUE_TOKEN)
+				.id("CoditionalTrainers:NPC_LOAD_SEARCH")
+				.name("NPC Load Search")
+				.query(DataQuery.of('.', "conditionaltrainers.npcloadsearch"))
 				.build();
 		NPC_DELETE_SEARCH = Key.builder()
 				.type(TypeTokens.BOOLEAN_VALUE_TOKEN)

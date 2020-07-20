@@ -14,7 +14,7 @@ public class CapabilityHandler
 	@SubscribeEvent
 	public void attachCapability(AttachCapabilitiesEvent<Entity> event)
 	{
-		if(!(event.getObject() instanceof NPCTrainer)) return;
+		if(!(event.getObject() instanceof NPCTrainer))	return;
 		
 		event.addCapability(TRAINER_CAP, new TrainerProvider());
 	}

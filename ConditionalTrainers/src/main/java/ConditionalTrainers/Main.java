@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import ConditionalTrainers.Commands.CT;
 import ConditionalTrainers.Commands.Create;
 import ConditionalTrainers.Commands.Info;
+import ConditionalTrainers.Commands.Load;
 import ConditionalTrainers.Data.Player.PlayerData;
 import ConditionalTrainers.Data.Player.ImmutablePlayerData;
 import ConditionalTrainers.Data.Player.PlayerDataBuilder;
@@ -43,8 +44,16 @@ public class Main {
 			.arguments(
 					GenericArguments.onlyOne(GenericArguments.string(Text.of("objective"))),
 					GenericArguments.onlyOne(GenericArguments.integer(Text.of("value")))
-					)
+						)
 			.executor(new Create())
+			.build();
+	// Load - CT child
+	CommandSpec ctlCommandSpec = CommandSpec.builder()
+			.arguments(
+					GenericArguments.onlyOne(GenericArguments.string(Text.of("objective"))),
+					GenericArguments.onlyOne(GenericArguments.integer(Text.of("value")))
+							)
+			.executor(new Load())
 			.build();
 	// Info - CT child
 	CommandSpec ctiCommandSpec = CommandSpec.builder()
@@ -54,6 +63,7 @@ public class Main {
 	CommandSpec ctCommandSpec = CommandSpec.builder()
 			.child(ctiCommandSpec, "info", "i")
 			.child(ctcCommandSpec, "create", "c", "add")
+			.child(ctlCommandSpec, "load", "l")
 			.executor(new CT())
 			.build();
 	// Command specs end
@@ -75,7 +85,7 @@ public class Main {
 		CapabilityManager.INSTANCE.register(ITrainer.class, new TrainerStorage(), Trainer::new);
 		
 		// Register event handlers
-		MinecraftForge.EVENT_BUS.register(CapabilityHandler.class);
+		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
 		
 		// Register event listeners outside of main class
 		Sponge.getEventManager().registerListeners(this, new Utility());
