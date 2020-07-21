@@ -1,21 +1,22 @@
 package ConditionalTrainers.Data.Trainer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import net.minecraft.nbt.NBTTagCompound;
 
 public class Trainer implements ITrainer
 {
-	private ArrayList<NBTTagCompound> teams = new ArrayList<NBTTagCompound>();
+	private LinkedList<NBTTagCompound> teams = new LinkedList<NBTTagCompound>();
 	private ArrayList<String> scoreboard = new ArrayList<String>();
 	private NBTTagCompound teamData = new NBTTagCompound();
 	
-	public void setTeams(ArrayList<NBTTagCompound> teams)
+	public void setTeams(LinkedList<NBTTagCompound> teams)
 	{
 		this.teams = teams;
 	}
 
-	public ArrayList<NBTTagCompound> getTeams()
+	public LinkedList<NBTTagCompound> getTeams()
 	{
 		return teams;
 	}
@@ -25,9 +26,10 @@ public class Trainer implements ITrainer
 		this.teams.add(team);
 	}
 
-	public void removeTeam(NBTTagCompound tag)
+	public void removeTeam(int i)
 	{
-		this.teams.remove(tag);
+		NBTTagCompound n = this.teams.remove(i);
+		System.out.println(n + " deleted.");
 	}
 
 	public void setScoreboard(ArrayList<String> scoreboard)

@@ -19,6 +19,11 @@ public class Delete implements CommandExecutor {
 	{
 		if(src instanceof Player)
 		{
+			String objString = args.<String>getOne("objective").orElse(null);
+			int val = args.<Integer>getOne("value").orElse(null);
+			
+			((Player)src).offer(PlayerKeys.OBJECTIVE, objString);
+			((Player)src).offer(PlayerKeys.VALUE, val);
 			((Player)src).offer(PlayerKeys.NPC_DELETE_SEARCH, true);
 			((Player)src).sendMessage(Text.of("Right click target trainer NPC"));
 		}

@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 
 import ConditionalTrainers.Commands.CT;
 import ConditionalTrainers.Commands.Create;
+import ConditionalTrainers.Commands.Delete;
 import ConditionalTrainers.Commands.Info;
 import ConditionalTrainers.Commands.Load;
 import ConditionalTrainers.Data.Player.PlayerData;
@@ -55,6 +56,14 @@ public class Main {
 							)
 			.executor(new Load())
 			.build();
+	// Delete - CT child
+	CommandSpec ctdCommandSpec = CommandSpec.builder()
+			.arguments(
+					GenericArguments.onlyOne(GenericArguments.string(Text.of("objective"))),
+					GenericArguments.onlyOne(GenericArguments.integer(Text.of("value")))
+					)
+			.executor(new Delete())
+			.build();
 	// Info - CT child
 	CommandSpec ctiCommandSpec = CommandSpec.builder()
 			.executor(new Info())
@@ -64,6 +73,7 @@ public class Main {
 			.child(ctiCommandSpec, "info", "i")
 			.child(ctcCommandSpec, "create", "c", "add")
 			.child(ctlCommandSpec, "load", "l")
+			.child(ctdCommandSpec, "delete", "del", "d")
 			.executor(new CT())
 			.build();
 	// Command specs end

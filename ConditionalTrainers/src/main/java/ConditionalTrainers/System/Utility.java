@@ -1,7 +1,5 @@
 package ConditionalTrainers.System;
 
-import java.util.Set;
-
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -38,6 +36,11 @@ public class Utility
 			setAllFalse(player);
 			
 			loadTeam(event.getTargetEntity(), player);
+		} else if(player.get(PlayerKeys.NPC_DELETE_SEARCH).get().booleanValue() == true && PlayerKeys.OBJECTIVE != null)
+		{
+			setAllFalse(player);
+			
+			deleteTeam(event.getTargetEntity(), player);
 		}
 	}
 	// Right click NPC event ending
@@ -48,11 +51,16 @@ public class Utility
 		{	
 			NPCTrainer npc = (NPCTrainer)entity;
 			ITrainer trainer = npc.getCapability(TrainerProvider.TRAINER_CAP, null);
-			
-			if(trainer.getTeams().equals(null) || trainer.getTeams().isEmpty())
+
+			if(trainer.getTeams().isEmpty())
 				player.sendMessage(Text.of("This NPC has no teams saved."));
 			else
-				player.sendMessage(Text.of(trainer.getTeams().toString()));
+			{
+				for(int i = 0; i < trainer.getTeams().size(); i++)
+				{	
+					player.sendMessage(Text.of(trainer.getTeams().get(i).getKeySet()));
+				}
+			}
 		} else
 			player.sendMessage(Text.of("Invalid NPC type. Must be a trainer NPC."));
 	}
@@ -79,8 +87,9 @@ public class Utility
 			
 			ITrainer trainer = npc.getCapability(TrainerProvider.TRAINER_CAP, null);
 			
-			// dynamically name parties based on number in arraylist
-			nbt.setString("party" + trainer.getTeams().size(), scobo);
+			// name party based on objective
+			//nbt.setString(scobo, "party" + trainer.getTeams().size());
+			nbt.setBoolean(scobo, true);
 			npc.getPokemonStorage().writeToNBT(nbt);
 			
 			trainer.addTeam(nbt);
@@ -89,16 +98,19 @@ public class Utility
 			
 			player.sendMessage(Text.of("Team added."));
 		} else
-			player.sendMessage(Text.of("Invalid NPC type. Must be a trainer Npc."));
+			player.sendMessage(Text.of("Invalid NPC type. Must be a valid trainer Npc."));
 	}
 	// CT Create ending
 	// CT Load beginning
 	public void loadTeam(Entity entity, Player player)
 	{
 		if (entity instanceof NPCTrainer)
-		{
+		{	
 			// get command arguments
 			String objectiveInput = player.get(PlayerKeys.OBJECTIVE).get();
+			int valueInput = player.get(PlayerKeys.VALUE).get();
+			
+			String playerScobo = createScobo(objectiveInput, valueInput);
 			
 			// reset player's data
 			player.offer(PlayerKeys.OBJECTIVE, "");
@@ -107,41 +119,114 @@ public class Utility
 			NPCTrainer npc = (NPCTrainer)entity;
 			ITrainer trainer = npc.getCapability(TrainerProvider.TRAINER_CAP, null);
 			
+			//debug
+			System.out.println("teams size: " + trainer.getTeams().size());
+			
 			Boolean matches = false;
 			
-			int a = 0;
 			int objTeamIdx = 0;
-			do
+			
+			for(int a = 0; a < trainer.getTeams().size(); a++)
 			{
-				if(trainer.getTeams().get(a).hasKey(objectiveInput))
+				if(trainer.getTeams().get(a).getBoolean(playerScobo))
 				{
 					matches = true;
 					objTeamIdx = a;
 				}
-				a++;
-			} while(matches != true || a < trainer.getTeams().size());
+			}
 			
-			if(matches == true && trainer.getScoreboard().contains(objectiveInput))
+			//debug
+			System.out.println(trainer.getScoreboard().contains(playerScobo));
+			
+			if(matches == true && trainer.getScoreboard().contains(playerScobo))
 			{
 				matches = false;
-				int sepValInput = getVal(objectiveInput);
+				int sepValInput = getVal(playerScobo);
 				
-				int idx = trainer.getScoreboard().indexOf(objectiveInput);
+				int idx = trainer.getScoreboard().indexOf(playerScobo);
 				
 				int valueActual = getVal(trainer.getScoreboard().get(idx));
 				
 				if(sepValInput == valueActual)
 				{	
+					// load logic
 					npc.getPokemonStorage().readFromNBT(trainer.getTeams().get(objTeamIdx));
+					player.sendMessage(Text.of("Team loaded."));
 				} else
 					player.sendMessage(Text.of("No team found for the given objective with the given value."));
 			} else
 				player.sendMessage(Text.of("No team found for the given objective."));
 
 		} else
-			player.sendMessage(Text.of("Invalid NPC type. Must be a trainer NPC."));;
+			player.sendMessage(Text.of("Invalid NPC type. Must be a valid trainer NPC."));
 	}
 	// CT Load ending
+	// CT Delete beginning
+	public static void deleteTeam(Entity entity, Player player)
+	{
+		if (entity instanceof NPCTrainer)
+		{
+			// get command arguments
+			String objectiveInput = player.get(PlayerKeys.OBJECTIVE).get(); // a 
+			int valueInput = player.get(PlayerKeys.VALUE).get(); // 1
+			
+			String playerScobo = createScobo(objectiveInput, valueInput); // a 1
+			
+			// reset player's data
+			player.offer(PlayerKeys.OBJECTIVE, "");
+			player.offer(PlayerKeys.VALUE, 0);
+			
+			NPCTrainer npc = (NPCTrainer)entity;
+			ITrainer trainer = npc.getCapability(TrainerProvider.TRAINER_CAP, null);
+			
+			
+			Boolean matches = false;
+			
+			int objTeamIdx = 0;
+			
+			for(int a = 0; a < trainer.getTeams().size(); a++)
+			{
+				if(trainer.getTeams().get(a).getBoolean(playerScobo)) // a = 0, playerScobo = a 1
+				{
+					matches = true;
+					objTeamIdx = a; // objTeamIdx = 0
+				}
+			}
+			
+			if(matches == true && trainer.getScoreboard().contains(playerScobo))
+			{
+				matches = false;
+				int sepValInput = getVal(playerScobo);
+				
+				int idx = trainer.getScoreboard().indexOf(playerScobo);
+				
+				int valueActual = getVal(trainer.getScoreboard().get(idx));
+				
+				if(sepValInput == valueActual)
+				{
+					// delete logic
+					trainer.removeTeam(objTeamIdx); // remove objTeamIdx = 0
+					trainer.removeScoreboard(playerScobo);
+					
+					
+					
+					/*a 1 = bulbasaur  0
+					 *a 2 = charmander 1
+					 *a 3 = squirtle   2
+					 * 
+					 * 
+					 * 
+					 */
+					
+					player.sendMessage(Text.of("Team deleted."));
+				} else
+					player.sendMessage(Text.of("No team found for the given objective with the given value."));
+			} else
+				player.sendMessage(Text.of("No team found for the given objective."));
+		} else
+			player.sendMessage(Text.of("Invalid NPC type. Must be a valid trainer NPC."));
+	}
+	// CT Delete ending
 	
 	// Join creation or fill beginning
 	public static void onJoinCreation(Player player)

@@ -1,6 +1,7 @@
 package ConditionalTrainers.Data.Trainer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,14 +20,17 @@ public class TrainerStorage implements IStorage<ITrainer>
 		NBTTagList teamList = new NBTTagList();
 		NBTTagList scoreList = new NBTTagList();
 		
-		for(int i = 0; i < instance.getScoreboard().size(); i++)
+		for(int i = 0; i < instance.getTeams().size(); i++)
 		{
 			// Save team data
 			teamList.appendTag(instance.getTeams().get(i));
-			
+		}
+		
+		for(int i = 0; i < instance.getScoreboard().size(); i++)
+		{
 			// Save scoreboard data
 			NBTTagCompound n = new NBTTagCompound();
-			n.setString("i", instance.getScoreboard().get(i));
+			n.setString(Integer.toString(i), instance.getScoreboard().get(i));
 			scoreList.appendTag(n);
 		}
 		
@@ -41,18 +45,32 @@ public class TrainerStorage implements IStorage<ITrainer>
 	{
 		NBTTagCompound comp = (NBTTagCompound) nbt;
 		NBTTagList teamList = new NBTTagList();
-		ArrayList<NBTTagCompound> teams = new ArrayList<NBTTagCompound>();
+		NBTTagList scoreList = new NBTTagList();
+		LinkedList<NBTTagCompound> teams = new LinkedList<NBTTagCompound>();
 		ArrayList<String> scoreboards = new ArrayList<String>();
 		
-		teamList = comp.getTagList("Teams", 9);
+		teamList = comp.getTagList("Teams", Constants.NBT.TAG_COMPOUND);
+		scoreList = comp.getTagList("Scoreboards", Constants.NBT.TAG_COMPOUND);
 		
-		for(int i = 0; i < comp.getCompoundTag("Scoreboards").getSize(); i++)
+		for(int i = 0; i < teamList.tagCount(); i++)
 		{
 			// Read team data
 			teams.add(teamList.getCompoundTagAt(i));
-			
+		}
+		
+		//debug
+		System.out.println("size: " + scoreList.tagCount());
+		
+		for(int i = 0; i < scoreList.tagCount(); i++)
+		{
 			// Read scoreboard data
-			scoreboards.add(comp.getCompoundTag("Scoreboards").getString(Integer.toString(i)));
+			NBTTagCompound n = new NBTTagCompound();
+			n = scoreList.getCompoundTagAt(i);
+			
+			scoreboards.add(n.getString(Integer.toString(i)));
+			
+			//debug
+			System.out.println("scro: " + scoreboards.get(i));
 		}
 		
 		instance.setTeams(teams);
