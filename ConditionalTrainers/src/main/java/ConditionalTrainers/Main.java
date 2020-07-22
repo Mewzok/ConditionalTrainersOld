@@ -16,6 +16,8 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 
 import com.google.inject.Inject;
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 
 import ConditionalTrainers.Commands.CT;
 import ConditionalTrainers.Commands.Create;
@@ -30,9 +32,12 @@ import ConditionalTrainers.Data.Trainer.CapabilityHandler;
 import ConditionalTrainers.Data.Trainer.ITrainer;
 import ConditionalTrainers.Data.Trainer.Trainer;
 import ConditionalTrainers.Data.Trainer.TrainerStorage;
+import ConditionalTrainers.System.ModListener;
 import ConditionalTrainers.System.Utility;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Plugin(id = "conditionaltrainers", name = "Conditional Trainers", version = "0.0.1")
 public class Main {
@@ -70,7 +75,7 @@ public class Main {
 			.build();
 	// CT > Info
 	CommandSpec ctCommandSpec = CommandSpec.builder()
-			.child(ctiCommandSpec, "info", "i")
+			.child(ctiCommandSpec, "info", "i", "list")
 			.child(ctcCommandSpec, "create", "c", "add")
 			.child(ctlCommandSpec, "load", "l")
 			.child(ctdCommandSpec, "delete", "del", "d")
@@ -96,6 +101,8 @@ public class Main {
 		
 		// Register event handlers
 		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
+		MinecraftForge.EVENT_BUS.register(new ModListener());
+		Pixelmon.EVENT_BUS.register(new ModListener());
 		
 		// Register event listeners outside of main class
 		Sponge.getEventManager().registerListeners(this, new Utility());
@@ -118,4 +125,7 @@ public class Main {
 	{
 		Utility.onJoinCreation(player);
 	}
+	
+	/*
+	*/
 }
