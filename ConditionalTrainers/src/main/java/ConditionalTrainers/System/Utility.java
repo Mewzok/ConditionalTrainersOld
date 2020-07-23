@@ -1,10 +1,8 @@
 package ConditionalTrainers.System;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
@@ -13,11 +11,8 @@ import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.text.Text;
 
-import com.google.inject.Key;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
-import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
-import com.pixelmonmod.pixelmon.battles.controller.participants.TrainerParticipant;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 
 import ConditionalTrainers.Data.Player.PlayerData;
@@ -29,7 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.world.World;
 
 public class Utility
 {
@@ -140,8 +135,6 @@ public class Utility
 			NPCTrainer npc = (NPCTrainer)entity;
 			ITrainer trainer = npc.getCapability(TrainerProvider.TRAINER_CAP, null);
 			
-			//debug
-			System.out.println("teams size: " + trainer.getTeams().size());
 			
 			Boolean matches = false;
 			
@@ -155,9 +148,6 @@ public class Utility
 					objTeamIdx = a;
 				}
 			}
-			
-			//debug
-			System.out.println(trainer.getScoreboard().contains(playerScobo));
 			
 			if(matches == true && trainer.getScoreboard().contains(playerScobo))
 			{
@@ -187,22 +177,25 @@ public class Utility
 	{
 		if (entity instanceof NPCTrainer)
 		{	
+			World world = ((net.minecraft.entity.Entity) player).getEntityWorld();
 
-			Scoreboard sb = new Scoreboard();
+			Scoreboard scoreboard = world.getScoreboard();
 			
 			NPCTrainer npc = (NPCTrainer)entity;
 			ITrainer trainer = npc.getCapability(TrainerProvider.TRAINER_CAP, null);
 			
-			Map<ScoreObjective, Score> playerScoresMap = sb.getObjectivesForEntity(player.getName());
+			Map<ScoreObjective, Score> playerScoresMap = scoreboard.getObjectivesForEntity(player.getName());
 			Collection<ScoreObjective> plObjs = playerScoresMap.keySet();
 			ArrayList<ScoreObjective> playerObjs = new ArrayList<>(plObjs);
 			ArrayList<Score> plScores = new ArrayList<>(playerScoresMap.values());
 			ArrayList<String> playerScores = new ArrayList<String>();
 
+			System.out.println("playterSCoresMap size: " + playerScoresMap.size());
+			
 			for(int i = 0; i < playerScoresMap.size(); i++)
 			{
-				String p1 = playerObjs.get(i).toString();
-				String p2 = plScores.get(i).toString();
+				String p1 = playerObjs.get(i).getName();
+				String p2 = Integer.toString(plScores.get(i).getScorePoints());
 				
 				playerScores.add(p1 + " " + p2);
 			}
@@ -214,7 +207,7 @@ public class Utility
 			
 			for(int i = 0; i < trainer.getTeams().size(); i++)
 			{	
-				for(int j = 0; j < playerScores.size(); j++)
+				for(int j = 0; j < playerScores.size(); j++) // this doesnt run
 				{
 					playerScobo = playerScores.get(j);
 					
@@ -232,10 +225,13 @@ public class Utility
 				npc.getPokemonStorage().readFromNBT(trainer.getTeams().get(objTeamIdx));
 				player.sendMessage(Text.of("Team loaded."));
 			} else
+			{
 				player.sendMessage(Text.of("No team found for the given objective with the given value."));
+			}
 		} else
+		{
 			player.sendMessage(Text.of("No team found for the given objective."));
-
+		}
 	}
 	// CT AutoLoad ending
 	// CT Delete beginning

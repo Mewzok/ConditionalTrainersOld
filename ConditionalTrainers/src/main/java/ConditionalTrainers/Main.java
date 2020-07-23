@@ -17,7 +17,6 @@ import org.spongepowered.api.text.Text;
 
 import com.google.inject.Inject;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 
 import ConditionalTrainers.Commands.CT;
 import ConditionalTrainers.Commands.Create;
@@ -36,8 +35,6 @@ import ConditionalTrainers.System.ModListener;
 import ConditionalTrainers.System.Utility;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Plugin(id = "conditionaltrainers", name = "Conditional Trainers", version = "0.0.1")
 public class Main {
